@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Automated Quiz Generator — NLP Project</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════ HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">🧠</span>
+        <div>
+          <h1>Automated Quiz Generator</h1>
+          <p>NLP-Powered · Rule-Based · No AI APIs</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════ MAIN -->
+  <main>
+
+    <!-- ── INPUT SECTION ── -->
+    <section class="input-section card">
+      <h2>📄 Input Academic Text</h2>
+      <p class="sub">Paste a paragraph, chapter excerpt, or upload a .txt file below.</p>
+
+      <!-- Text area -->
+      <textarea
+        id="inputText"
+        placeholder="Paste your academic text here...&#10;&#10;Example: The water cycle, also known as the hydrological cycle, describes the continuous movement of water on, above and below the surface of the Earth. Water evaporates from oceans and lakes, rises into the atmosphere, condenses into clouds, and falls back as precipitation..."
+        rows="10"
+      ></textarea>
+
+      <!-- File upload row -->
+      <div class="file-row">
+        <label for="fileInput" class="file-label">
+          📎 Upload .txt file
+          <input type="file" id="fileInput" accept=".txt" />
+        </label>
+        <span id="fileName" class="file-name">No file chosen</span>
+
+        <button class="btn-sample" id="loadSample">Load Sample Text</button>
+      </div>
+
+      <!-- Controls row -->
+      <div class="controls-row">
+        <div class="num-control">
+          <label>MCQs</label>
+          <input type="number" id="numMcq" value="5" min="1" max="10" />
+        </div>
+        <div class="num-control">
+          <label>True/False</label>
+          <input type="number" id="numTf" value="5" min="1" max="10" />
+        </div>
+        <div class="num-control">
+          <label>Fill Blanks</label>
+          <input type="number" id="numFill" value="5" min="1" max="10" />
+        </div>
+        <button class="btn-generate" id="generateBtn" onclick="generateQuiz()">
+          ⚡ Generate Quiz
+        </button>
+      </div>
+
+      <!-- Status message -->
+      <div id="statusMsg" class="status-msg hidden"></div>
+    </section>
+
+    <!-- ── OUTPUT SECTION ── -->
+    <section id="outputSection" class="output-section hidden">
+
+      <!-- ── GLOBAL SCORE BAR ── -->
+      <div id="globalScoreBar" class="global-score-bar hidden">
+        <div class="score-bar-header">
+          <span class="score-label">📈 Live Score</span>
+          <span id="globalScoreText" class="score-text">0 / 0 correct</span>
+          <span id="globalScorePct" class="score-pct">0%</span>
+        </div>
+        <div class="score-track">
+          <div id="globalScoreFill" class="score-fill score-fill-good" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Tabs + action buttons -->
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('mcq', this)">
+          📝 MCQ
+          <span id="mcqCount" class="count-badge">0</span>
+          <span id="mcq-score-badge" class="score-tab-badge"></span>
+        </button>
+        <button class="tab" onclick="switchTab('tf', this)">
+          ✅ True / False
+          <span id="tfCount" class="count-badge">0</span>
+          <span id="tf-score-badge" class="score-tab-badge"></span>
+        </button>
+        <button class="tab" onclick="switchTab('fill', this)">
+          ✏️ Fill in Blanks
+          <span id="fillCount" class="count-badge">0</span>
+          <span id="fill-score-badge" class="score-tab-badge"></span>
+        </button>
+        <button class="btn-final-score" onclick="showFinalScore()">🏆 Final Score</button>
+        <button class="btn-copy" onclick="copyQuiz()">📋 Copy All</button>
+      </div>
+
+      <!-- MCQ Panel -->
+      <div id="mcqPanel" class="panel active">
+        <div id="mcqQuestions"></div>
+      </div>
+
+      <!-- True/False Panel -->
+      <div id="tfPanel" class="panel">
+        <div id="tfQuestions"></div>
+      </div>
+
+      <!-- Fill in Blanks Panel -->
+      <div id="fillPanel" class="panel">
+        <div id="fillQuestions"></div>
+      </div>
+
+      <!-- ── FINAL SCORE BOX ── -->
+      <div id="finalScoreBox" class="final-score-box hidden"></div>
+
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════ FOOTER -->
+  <footer>
+    <p>Automated Quiz Generator </p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
