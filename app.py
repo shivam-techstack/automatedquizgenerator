@@ -1,31 +1,38 @@
-
 import sys
 import os
+import socket
 
 # Add backend directory to path so imports work
 sys.path.insert(0, os.path.dirname(__file__))
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from question_generator import generate_quiz
 
 app = Flask(__name__)
-
 # Enable CORS so the frontend HTML file can call this API
 CORS(app)
 
+def get_local_ip():
+    """Fetch the local device IP address dynamically."""
+    try:
+        # Connect to an external host to determine the local IP
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))  # Google DNS — no data is actually sent
+        local_ip = s.getsockname()[0]
+        s.close()
+        return local_ip
+    except Exception:
+        return "127.0.0.1"  # Fallback to localhost if detection fails
 
 @app.route('/health', methods=['GET'])
 def health_check():
     """Simple health check endpoint."""
     return jsonify({"status": "running", "message": "Quiz Generator API is up!"})
 
-
 @app.route('/generate-quiz', methods=['POST'])
 def generate_quiz_endpoint():
     """
     Main API endpoint for quiz generation.
-
     Accepts JSON body:
       {
         "text": "Your academic text here...",
@@ -33,7 +40,6 @@ def generate_quiz_endpoint():
         "num_tf": 5,        (optional, default 5)
         "num_fill": 5       (optional, default 5)
       }
-
     Returns JSON:
       {
         "mcq": [...],
@@ -43,12 +49,10 @@ def generate_quiz_endpoint():
     """
     try:
         data = request.get_json()
-
         if not data:
             return jsonify({"error": "No JSON body received."}), 400
 
         text = data.get('text', '').strip()
-
         if not text:
             return jsonify({"error": "The 'text' field is required and cannot be empty."}), 400
 
@@ -64,17 +68,16 @@ def generate_quiz_endpoint():
 
         # ── Generate the quiz ──
         result = generate_quiz(text, num_mcq=num_mcq, num_tf=num_tf, num_fill=num_fill)
-
         return jsonify(result), 200
 
     except Exception as e:
         return jsonify({"error": f"Internal server error: {str(e)}"}), 500
 
-
 if __name__ == '__main__':
+    local_ip = get_local_ip()
     print("=" * 50)
     print("  Automated Quiz Generator - Backend Server")
-    print("  Running at: http://127.0.0.1:5000")
-    print("  Health check: http://127.0.0.1:5000/health")
+    print(f"  Running at: http://{local_ip}:5000")
+    print(f"  Health check: http://{local_ip}:5000/health")
     print("=" * 50)
-    app.run(debug=True, host='127.0.0.1', port=5000)
+    app.run(debug=True, host=local_ip, port=5000)
