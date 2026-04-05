@@ -9,7 +9,7 @@
  *  - Final Score summary with breakdown
  */
 
-const API_URL = 'http://127.0.0.1:5000/generate-quiz';
+const API_URL = 'https://automatedquizgenerator-tr12.onrender.com';
 
 // ─────────────────────────────────────────────
 // SCORE STATE
