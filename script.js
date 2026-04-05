@@ -9,7 +9,7 @@
  *  - Final Score summary with breakdown
  */
 
-const API_URL = 'https://automatedquizgenerator-tr12.onrender.com';
+const API_URL = 'https://automatedquizgenerator-production.up.railway.app/';
 
 // ─────────────────────────────────────────────
 // SCORE STATE
